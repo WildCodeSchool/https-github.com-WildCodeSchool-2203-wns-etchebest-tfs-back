@@ -25,6 +25,7 @@ services:
       retries: 10
   #   volumes:
   #     - mysql:/var/lib/mysql
+
   phpmyadmin:
     image: phpmyadmin
     restart: always

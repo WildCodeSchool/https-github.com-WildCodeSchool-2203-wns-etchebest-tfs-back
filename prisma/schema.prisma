@@ -15,6 +15,7 @@ generator client {
 
 generator typegraphql {
   provider = "typegraphql-prisma"
+  output   = "../prisma/generated/type-graphql"
 }
 
 //https://www.prisma.io/docs/concepts/components/prisma-schema/data-model

@@ -6,6 +6,7 @@ import { Authorized } from "type-graphql";
 
 import { context } from "./context";
 
+
 import {
   resolvers, 
   ResolversEnhanceMap, 
@@ -24,6 +25,7 @@ const resolversEnhanceMap: ResolversEnhanceMap = {
 applyResolversEnhanceMap(resolversEnhanceMap);
 
 
+
 const app = async () => {
   const schema = await tq.buildSchema({
     resolvers: [...resolvers, CustomAuthResolver],
@@ -31,12 +33,13 @@ const app = async () => {
     validate: false,
   });
 
+
   new ApolloServer({ schema, context: context }).listen({ port: 4000 }, () => {
     console.log(
       "🚀 Server ready at: http://localhost:4000/graphql"
     )
   }
-    
+
   );
 };
 app();

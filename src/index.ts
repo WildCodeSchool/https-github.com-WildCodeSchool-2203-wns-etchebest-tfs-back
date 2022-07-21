@@ -11,8 +11,7 @@ import {
   ResolversEnhanceMap, 
   applyResolversEnhanceMap,  
   Role} from "../prisma/generated/type-graphql";
-
-import customLoginResolver from "./customLoginResolver";
+import {CustomAuthResolver} from "./customAuthResolver";
 import { customAuthChecker } from "./auth/custom-auth-checker";
 
 
@@ -27,7 +26,7 @@ applyResolversEnhanceMap(resolversEnhanceMap);
 
 const app = async () => {
   const schema = await tq.buildSchema({
-    resolvers: [...resolvers, customLoginResolver],
+    resolvers: [...resolvers, CustomAuthResolver],
     authChecker: customAuthChecker,
     validate: false,
   });

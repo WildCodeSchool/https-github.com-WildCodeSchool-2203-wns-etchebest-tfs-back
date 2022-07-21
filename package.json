@@ -17,6 +17,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/jsonwebtoken": "^8.5.8",
     "@types/node": "^17.0.24",
     "nodemon": "^2.0.15",
     "prisma": "^3.12.0",
@@ -27,8 +28,10 @@
   "dependencies": {
     "@prisma/client": "^3.12.0",
     "apollo-server": "^3.6.7",
+    "bcrypt": "^5.0.1",
     "class-validator": "^0.13.2",
     "graphql": "^15.8.0",
+    "jsonwebtoken": "^8.5.1",
     "reflect-metadata": "^0.1.13",
     "ts-node": "^10.7.0",
     "type-graphql": "^1.1.1"

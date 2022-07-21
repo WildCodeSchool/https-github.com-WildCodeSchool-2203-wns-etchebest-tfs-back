@@ -36,13 +36,10 @@ services:
 
   client-tfs:
     build: ../2203-wns-etchebest-tfs-front/.
-
     container_name: "client"
     depends_on:
       - server
     ports:
       - 3000:3000
     volumes:
-      - ../2203-wns-etchebest-tfs-front:/app
-      - /app/node_modules
-      - /app/.next
+      - ../2203-wns-etchebest-tfs-front/src:/app/src

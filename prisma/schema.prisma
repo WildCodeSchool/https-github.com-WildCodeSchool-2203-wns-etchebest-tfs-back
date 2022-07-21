@@ -31,6 +31,12 @@ model User{
   comments Comment[]
   tickets_author Ticket[] @relation("author")
   tickets_assign Ticket[] @relation("assigned")
+  role    Role     @default(USER)
+}
+
+enum Role {
+  USER
+  ADMIN
 }
 
 

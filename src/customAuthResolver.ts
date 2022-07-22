@@ -2,7 +2,7 @@ import { prisma } from "@prisma/client";
 import { Arg, Authorized, Ctx, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
 import { User } from "../prisma/generated/type-graphql/models/User";
 import { UserCreateInput } from "../prisma/generated/type-graphql/resolvers/inputs/UserCreateInput"
-import { Context } from "./context";
+import {IContext}  from "./context";
 const bcrypt = require('bcrypt');
 
 import jwt from 'jsonwebtoken';
@@ -25,7 +25,7 @@ export class CustomAuthResolver {
 
   @Query(() => String)
   async login(
-    @Ctx() { prisma }: Context,
+    @Ctx() { prisma }: IContext,
     @Arg("data") data: LoginInput,
   ) {
     const {email,password} = data
@@ -41,13 +41,14 @@ export class CustomAuthResolver {
         throw new ApolloError("Invalid password");
       }
       else {
-        return jwt.sign(JSON.stringify(user.email) , process.env.JWT_SECRET || 'supersecret');
+        const token = jwt.sign({user: user.email}, process.env.JWT_SECRET || 'supersecret');
+        return token;
       }
     }
   }
-
+  
   @Mutation(() => String)
-  async register( @Ctx() { prisma }: Context, @Arg("data") data: UserCreateInput) {
+  async register( @Ctx() { prisma }: IContext, @Arg("data") data: UserCreateInput) {
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
     const user = await prisma.user.create({
@@ -57,7 +58,8 @@ export class CustomAuthResolver {
       },
     });
 
-    return jwt.sign(JSON.stringify(user.email) , process.env.JWT_SECRET || 'supersecret');
+    const token = jwt.sign({user: user.email}, process.env.JWT_SECRET || 'supersecret');
+    return token;
   }
 }
 

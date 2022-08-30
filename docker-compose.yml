@@ -1,10 +1,11 @@
 services:
   server-tfs:
     build: .
-    container_name: "server"
+    container_name: "server-tfs"
     depends_on:
       mysql:
         condition: service_healthy
+    tty: true
     ports:
       - 4000:4000
     volumes:
@@ -21,7 +22,7 @@ services:
       MYSQL_DATABASE: tfs
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      timeout: 20s
+      timeout: 30s
       retries: 10
   #   volumes:
   #     - mysql:/var/lib/mysql
@@ -34,9 +35,9 @@ services:
       - PMA_ARBITRARY=1
   client-tfs:
     build: ../2203-wns-etchebest-tfs-front/.
-    depends_on: 
-      - server
-    container_name: "client"
+    depends_on:
+      - server-tfs
+    container_name: "client-tfs"
     ports:
       - 3000:3000
     volumes:

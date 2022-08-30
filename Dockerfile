@@ -1,10 +1,12 @@
-FROM node:lts-alpine
+FROM node:lts
 
 RUN mkdir /app
 WORKDIR /app
 COPY package*.json ./
+#RUN apk add g++ make py3-pip
+   
 RUN npm i
-RUN npm i -g typescript ts-node-dev
+RUN npm i -g typescript ts-node-dev 
 COPY src src
 COPY tsconfig.json tsconfig.json
 COPY .env .env

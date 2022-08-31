@@ -14,12 +14,17 @@ import {
 import {CustomAuthResolver} from "./customAuthResolver";
 import { customAuthChecker } from "./auth/custom-auth-checker";
 
+import { Middelware } from "./middelware/middelware"
+
 
 const resolversEnhanceMap: ResolversEnhanceMap = {
   User: {
     users: [Authorized(Role.ADMIN)],
   },
 };
+
+//Middelware
+Middelware.encryptPassword(context)
 
 applyResolversEnhanceMap(resolversEnhanceMap);
 
@@ -36,7 +41,6 @@ const app = async () => {
       "🚀 Server ready at: http://localhost:4000/graphql"
     )
   }
-    
   );
 };
 app();

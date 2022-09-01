@@ -8,8 +8,6 @@ services:
       mysql:
         condition: service_healthy
     tty: true
-    ports:
-      - 4000:4000
     volumes:
       - ./src/:/app/src/
   mysql:
@@ -41,8 +39,6 @@ services:
     depends_on:
       - server-tfs
     container_name: "client-tfs"
-    ports:
-      - 3000:3000
   nginx:
     image: nginx:1.22
     depends_on:

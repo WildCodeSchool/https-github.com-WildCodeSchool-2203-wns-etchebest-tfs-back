@@ -1,15 +1,13 @@
+version: "2"
 services:
   server-tfs:
     build: .
+    command: sh -c "npx prisma generate && npm run build && npm run prod "
     container_name: "server-tfs"
     depends_on:
       mysql:
         condition: service_healthy
     tty: true
-    ports:
-      - 4000:4000
-    volumes:
-      - ./src/:/app/src/
   mysql:
     image: mysql
     container_name: "mysql"
@@ -26,19 +24,20 @@ services:
       retries: 10
   #   volumes:
   #     - mysql:/var/lib/mysql
-  phpmyadmin:
-    image: phpmyadmin
-    restart: always
-    ports:
-      - 8080:80
-    environment:
-      - PMA_ARBITRARY=1
   client-tfs:
     build: ../2203-wns-etchebest-tfs-front/.
+    command: sh -c "yarn build && yarn start"
     depends_on:
       - server-tfs
     container_name: "client-tfs"
+  nginx:
+    image: nginx:1.22
+    depends_on:
+      - server-tfs
+      - client-tfs
+    restart: always
     ports:
-      - 3000:3000
+      - 8000:80
     volumes:
-      - ../2203-wns-etchebest-tfs-front/src:/app/src
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./logs:/var/log/nginx

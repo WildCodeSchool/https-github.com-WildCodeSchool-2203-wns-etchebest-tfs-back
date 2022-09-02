@@ -11,6 +11,7 @@ datasource db {
 //"npx prisma migrate" ou "npm run migrate dev" actionne les 2 générateurs à chaque fois que la commande est lancée.
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native"]
 }
 
 generator typegraphql {
@@ -31,6 +32,12 @@ model User{
   comments Comment[]
   tickets_author Ticket[] @relation("author")
   tickets_assign Ticket[] @relation("assigned")
+  role    Role     @default(USER)
+}
+
+enum Role {
+  USER
+  ADMIN
 }
 
 

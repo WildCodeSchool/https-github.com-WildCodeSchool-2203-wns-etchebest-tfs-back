@@ -42,5 +42,3 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/tfs_deploy_server:latest
-          cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/tfs_deploy_server:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/tfs_deploy_server:buildcache,mode=max

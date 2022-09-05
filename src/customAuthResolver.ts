@@ -2,7 +2,7 @@ import { prisma } from "@prisma/client";
 import { Arg, Authorized, Ctx, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
 import { User } from "../prisma/generated/type-graphql/models/User";
 import { UserCreateInput } from "../prisma/generated/type-graphql/resolvers/inputs/UserCreateInput"
-import { Context } from "./context";
+import {IContext}  from "./context";
 const bcrypt = require('bcrypt');
 
 import jwt from 'jsonwebtoken';
@@ -18,16 +18,11 @@ export class LoginInput {
   @MaxLength(8)
   password!: string;
 }
-
-
 @Resolver()
 export class CustomAuthResolver {
-
+  
   @Query(() => String)
-  async login(
-    @Ctx() { prisma }: Context,
-    @Arg("data") data: LoginInput,
-  ) {
+  async login( @Ctx() { prisma }: IContext, @Arg("data") data: LoginInput ) {
     const {email,password} = data
     const user = await prisma.user.findUnique({ where: { email } });
 
@@ -41,11 +36,12 @@ export class CustomAuthResolver {
         throw new ApolloError("Invalid password");
       }
       else {
-        return jwt.sign(JSON.stringify(user.email) , process.env.JWT_SECRET || 'supersecret');
+        const token = jwt.sign(user.email, process.env.JWT_SECRET || 'supersecret');
+        return token;
       }
     }
   }
-
+  
   @Mutation(() => String)
   async register( @Ctx() { prisma }: Context, @Arg("data") data: UserCreateInput) {
     //Password encrypt in middleware
@@ -55,7 +51,8 @@ export class CustomAuthResolver {
       },
     });
 
-    return jwt.sign(JSON.stringify(user.email) , process.env.JWT_SECRET || 'supersecret');
+    const token = jwt.sign(user.email, process.env.JWT_SECRET || 'supersecret');
+    return token;
   }
 }
 

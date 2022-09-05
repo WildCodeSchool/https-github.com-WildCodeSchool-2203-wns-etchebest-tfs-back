@@ -18,16 +18,11 @@ export class LoginInput {
   @MaxLength(8)
   password!: string;
 }
-
-
 @Resolver()
 export class CustomAuthResolver {
-
+  
   @Query(() => String)
-  async login(
-    @Ctx() { prisma }: IContext,
-    @Arg("data") data: LoginInput,
-  ) {
+  async login( @Ctx() { prisma }: IContext, @Arg("data") data: LoginInput ) {
     const {email,password} = data
     const user = await prisma.user.findUnique({ where: { email } });
 
@@ -41,7 +36,7 @@ export class CustomAuthResolver {
         throw new ApolloError("Invalid password");
       }
       else {
-        const token = jwt.sign({user: user.email}, process.env.JWT_SECRET || 'supersecret');
+        const token = jwt.sign(user.email, process.env.JWT_SECRET || 'supersecret');
         return token;
       }
     }
@@ -58,7 +53,7 @@ export class CustomAuthResolver {
       },
     });
 
-    const token = jwt.sign({user: user.email}, process.env.JWT_SECRET || 'supersecret');
+    const token = jwt.sign(user.email, process.env.JWT_SECRET || 'supersecret');
     return token;
   }
 }

@@ -31,7 +31,10 @@ model User{
   comments Comment[]
   tickets_author Ticket[] @relation("author")
   tickets_assign Ticket[] @relation("assigned")
-  role    Role     @default(USER)
+  //A FAIRE !!! Retourner un tableau de roles et non un seul role
+  //Attention, prisma ne permet pas de mettre un tableau en valeur par défaut
+  //---à mettre en place dans le resolver au moment de la création d'un utilisateur (user.roles.push('ADMIN'))
+  roles    Role     @default(USER)
 }
 
 enum Role {

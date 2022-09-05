@@ -8,6 +8,8 @@ import { CustomAuthResolver } from "./customAuthResolver";
 import { customAuthChecker } from "./auth/customAuthChecker";
 import { Authorized } from "type-graphql";
 
+import { Middelware } from "./middelware/middelware"
+
 
 //Middleware to check if user is logged in on generated resolvers (from prisma-type-graphql)
 const resolversEnhanceMap: ResolversEnhanceMap = {
@@ -18,6 +20,9 @@ const resolversEnhanceMap: ResolversEnhanceMap = {
     projects: [Authorized(Role.ADMIN)],
   }
 };
+
+//Middelware
+Middelware.encryptPassword(context)
 
 applyResolversEnhanceMap(resolversEnhanceMap);
 

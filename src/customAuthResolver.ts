@@ -43,13 +43,11 @@ export class CustomAuthResolver {
   }
   
   @Mutation(() => String)
-  async register( @Ctx() { prisma }: IContext, @Arg("data") data: UserCreateInput) {
-    const hashedPassword = await bcrypt.hash(data.password, 10);
-
+  async register( @Ctx() { prisma }: Context, @Arg("data") data: UserCreateInput) {
+    //Password encrypt in middleware
     const user = await prisma.user.create({
       data: {
         ...data,
-        password: hashedPassword,
       },
     });
 

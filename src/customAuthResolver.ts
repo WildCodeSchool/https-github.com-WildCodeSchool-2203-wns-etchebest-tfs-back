@@ -27,13 +27,13 @@ export class CustomAuthResolver {
     const user = await prisma.user.findUnique({ where: { email } });
 
     if (user === null) {
-      throw new ApolloError("User not found");
+      throw new ApolloError("Incorrect identifier", "INVALID_CREDENTIALS");
     }
     else{
       const isValid = await bcrypt.compare(password, user.password);
 
       if(!isValid){
-        throw new ApolloError("Invalid password");
+        throw new ApolloError("Invalid password", "INVALID_CREDENTIALS");
       }
       else {
         const token = jwt.sign(user.email, process.env.JWT_SECRET || 'supersecret');
@@ -44,11 +44,16 @@ export class CustomAuthResolver {
   
   @Mutation(() => String)
   async register( @Ctx() { prisma }: IContext, @Arg("data") data: UserCreateInput) {
+    
     const isExited = await prisma.user.findFirst({ where: { email: data.email}})
     if(isExited) {
-      throw new ApolloError('A user is already registered with the email' + data.email, 'USER_ALREADY_EXISTS')
+      throw new ApolloError('A user is already registered with the email ' + data.email, 'USER_ALREADY_EXISTS')
   }
-    //Password encrypt in middleware
+    //---- A enlever quand le middleware de hash sera fonctionnel -------
+    const salt = bcrypt.genSaltSync(10)
+    const hash = bcrypt.hashSync(data.password, salt)
+    data.password = hash
+    //--------------------------------------------------------
     const user = await prisma.user.create({
       data: {
         ...data,

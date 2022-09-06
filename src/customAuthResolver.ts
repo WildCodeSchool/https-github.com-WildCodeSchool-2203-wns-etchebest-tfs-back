@@ -43,7 +43,11 @@ export class CustomAuthResolver {
   }
   
   @Mutation(() => String)
-  async register( @Ctx() { prisma }: Context, @Arg("data") data: UserCreateInput) {
+  async register( @Ctx() { prisma }: IContext, @Arg("data") data: UserCreateInput) {
+    const isExited = await prisma.user.findFirst({ where: { email: data.email}})
+    if(isExited) {
+      throw new ApolloError('A user is already registered with the email' + data.email, 'USER_ALREADY_EXISTS')
+  }
     //Password encrypt in middleware
     const user = await prisma.user.create({
       data: {

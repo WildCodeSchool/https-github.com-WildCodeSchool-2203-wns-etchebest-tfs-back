@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { AuthenticationError } from "apollo-server";
 import jwt from 'jsonwebtoken';
+import { User } from "../prisma/generated/type-graphql";
 
 
 
@@ -8,21 +9,43 @@ const prisma = new PrismaClient();
 
 export interface IContext {
   prisma: PrismaClient;
-  user?: object
+  user?: User
 }
 
-export  const context = async ({ req }: any) => {  
+
+ export const context: IContext = {
+  prisma,
+  user : {
+    id: 1,
+    firstname: "Thaine",
+    lastname: "Brown",
+    email: "test@test.com",
+    createdAt: new Date(),
+    password: "45254",
+    roles: "ADMIN",
+  }
+}; 
+ 
+ export  const context2 = async ({ req }: any):Promise<IContext> => {  
   const token = req.headers.authorization || '';
   const email = parseToken(token);
  //A FAIRE !!! retourner le context sans user si pas de token
   try {
+    if(!token) {
+      return { prisma }
+    }
     const user = await getUser(email);
-    return { prisma, user }
+    if(user){
+      return { prisma, user }
+    }
+    if (!user) {
+      throw new AuthenticationError("Unable to get user with this token");  
+    }
   } catch (error) {
-    new AuthenticationError("Invalid token")
+   new AuthenticationError("Invalid token")
   }
-  return { prisma };
-}
+  return { prisma }
+}  
 
 //Retourne le email contenu dans le token
 function parseToken(token: string) {

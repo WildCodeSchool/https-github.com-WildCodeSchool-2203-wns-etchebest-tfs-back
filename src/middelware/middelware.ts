@@ -1,11 +1,10 @@
-import { Context } from "../context";
+import { IContext } from "../context";
 const bcrypt = require("bcrypt");
 
 
 export class Middelware {
 
-  static encryptPassword(context: Context) {
-
+  static encryptPassword(context:IContext) {
     context.prisma.$use(async (params, next) => {
       if (params.action === "create" && params.model === "User") {
         const user = params.args.data

@@ -1,62 +1,94 @@
-Installer les modules du package.json:
+# Structure
+
+
+## Lancer le projet (back et front) avec docker
+
+#### Au premier lancement ou à chaque modification des dockerfiles ou docker-compose
+
+```sh   
+docker compose -f docker-compose.yml up --build
+```
+#### Si vous avez déjà lancé le projet avec docker et que le conteneur est existant
+
+```sh
+docker-compose up
+```
+Playground graphQl: http://localhost:4000/graphql
+PHPmyadmin: http://localhost:8080
+  - serveur = [CONTAINER_NAME] (mysql)
+  - user = [USERNAME] (root)
+  - password = [PASSWORD] (root)
+Client: http://localhost:3000
+
+#### Entrez dans le conteneur
+
+##### Dans le serveur ou client
+```sh
+docker exec -it [CONTAINER_ID] /bin/sh
+```
+"exit" pour sortir du conteneur
+
+##### Dans la DB
+```sh  
+docker exec -it [CONTAINER_ID | CONTAINER_NAME] mysql -u[USERNAME] -p[PASSWORD]
+```
+"quit" pour sortir du conteneur
+
+## Lancer le projet
+
+### Installer les node modules
 
 ```sh
 npm install
 ```
 
-Lancer le serveur - actualisation à la sauvegarde:
+### Créer un fichier .env à la racine du projet
 
-```sh
-npm start
+Exemple pour une BDD [image]({https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white}) local utilisée en développement
+```
+DATABASE_URL=file:./dev.db
 ```
 
-```sh
-npx prisma
-```
-
-Prisma is a modern DB toolkit to query, migrate and model your database (https://prisma.io)
-
-Usage
-
-$ prisma [command]
-
-Commands
-
-            init   Setup Prisma for your app
-        generate   Generate artifacts (e.g. Prisma Client)
-              db   Manage your database schema and lifecycle
-         migrate   Migrate your database
-          studio   Browse your data with Prisma Studio
-          format   Format your schema
-
-Flags
-
-     --preview-feature   Run Preview Prisma commands
-
-Examples
-
-Setup a new Prisma project
-$ prisma init
-
-Generate artifacts (e.g. Prisma Client)
-$ prisma generate
-
-Browse your data
-$ prisma studio
-
-Create migrations from your Prisma schema, apply them to the database, generate artifacts (e.g. Prisma Client)
-$ prisma migrate dev
-
-Pull the schema from an existing database, updating the Prisma schema
-$ prisma db pull
-
-Push the Prisma schema state to the database
-$ prisma db push
+### Génerer la base de données (Génère automatiquement la BDD)
 
 ```sh
-npx prisma init --datasource-provider sqlite
+npx prisma migrate dev
+```
+Génère automatiquement une base de données sqlite ainsi que la mrigation pour créer les tables correspondantes au schema prisma.
+
+### Lancer le serveur
+
+```sh
+npm run start
+```
+Le playground graphQl sera accéssible sur le port 4000
+
+### Pour visualiser et manipuler les données de la base de données
+
+```sh
+npx prisma studio
+```
+Une interface sera disponible sur le port 5000
+
+
+## Pendant les développement
+
+### Après chaque modification du modèle prisma
+
+```sh
+npx prisma db push
 ```
 
-1. Set the DATABASE_URL in the .env file to point to your existing database. If your database has no tables yet, read https://pris.ly/d/getting-started
-2. Run npx prisma db pull to turn your database schema into a Prisma schema.
-3. Run npx prisma generate to generate the Prisma Client. You can then start querying your database.
+### Vous pouvez également réinitialiser la base de données
+
+ATTENTION NE PAS UTILISER EN PRODUCTION
+```sh
+npx prisma migrate reset
+```
+
+
+## Pour la production
+```sh
+npx prisma migrate deploy
+```
+

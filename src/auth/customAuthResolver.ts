@@ -1,4 +1,3 @@
-import { prisma } from "@prisma/client";
 import { Arg, Ctx, Field, InputType, Mutation,Resolver } from "type-graphql";
 
 const bcrypt = require('bcrypt');
@@ -19,11 +18,13 @@ export class LoginInput {
   @MaxLength(8)
   password!: string;
 }
+
 @Resolver()
 export class CustomAuthResolver {
   
   @Mutation(() => String)
   async login( @Ctx() { prisma }: IContext, @Arg("data") data: LoginInput ) {
+    console.log(data)
     const {email,password} = data
     const user = await prisma.user.findUnique({ where: { email } });
 
@@ -61,7 +62,7 @@ export class CustomAuthResolver {
       },
     });
 
-    const token = jwt.sign(user.email, process.env.JWT_SECRET || 'supersecret');
+    const token =  jwt.sign({email: user.email}, process.env.JWT_SECRET || 'supersecret', {expiresIn: '1h'});
     return token;
   }
 }

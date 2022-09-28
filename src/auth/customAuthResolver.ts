@@ -1,3 +1,5 @@
+// Description: Custom resolver for login and register
+
 import { Arg, Ctx, Field, InputType, Mutation,Resolver } from "type-graphql";
 
 const bcrypt = require('bcrypt');
@@ -15,13 +17,15 @@ export class LoginInput {
   email!: string;
 
   @Field()
-  @MaxLength(8)
+  @MaxLength(8) //TODO: @MINLENGTH pas MAX
   password!: string;
 }
 
+//AUTH resolver
 @Resolver()
 export class CustomAuthResolver {
   
+  //LOGIN mutation
   @Mutation(() => String)
   async login( @Ctx() { prisma }: IContext, @Arg("data") data: LoginInput ) {
     console.log(data)
@@ -44,11 +48,12 @@ export class CustomAuthResolver {
     }
   }
   
+  //REGISTER mutation
   @Mutation(() => String)
   async register( @Ctx() { prisma }: IContext, @Arg("data") data: UserCreateInput) {
     
-    const isExited = await prisma.user.findFirst({ where: { email: data.email}})
-    if(isExited) {
+    const isExist = await prisma.user.findFirst({ where: { email: data.email}})
+    if(isExist) {
       throw new ApolloError('A user is already registered with the email ' + data.email, 'USER_ALREADY_EXISTS')
   }
     //---- A enlever quand le middleware de hash sera fonctionnel -------

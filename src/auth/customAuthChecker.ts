@@ -17,12 +17,16 @@ export const customAuthChecker: AuthChecker<IContext> = async ({ context }, role
   
   console.log({user_role:user?.roles, roles});
  
+  //Checke les rôles des ROUTES (accessibles avec ou sans permissions)
   if(roles.length === 0) {
-    return true;
+    return true; //route OPEN
   }
+
+  // si route demande un role et user à pas de rôle
   else if (!user?.roles) {
-    return false;
+    return false; //acces denied
   }
+  // route demande roles et user à un de ces roles
   else if (user && roles.includes(user.roles)) {
     return true
   }  

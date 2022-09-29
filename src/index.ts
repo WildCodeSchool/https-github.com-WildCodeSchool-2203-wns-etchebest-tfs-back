@@ -1,33 +1,20 @@
+//Librairies
 import "reflect-metadata";
 import { ApolloServer } from "apollo-server";
-
 import * as tq from "type-graphql";
-import { Authorized } from "type-graphql";
+import { applyResolversEnhanceMap, resolvers } from "../prisma/generated/type-graphql";
 
+//Custom
 import { context } from "./context";
+import { CustomAuthResolver } from "./auth/customAuthResolver";
+import { customAuthChecker } from "./auth/customAuthChecker";
+import { resolversEnhanceMap } from "./auth/guard";
 
-import {
-  resolvers, 
-  ResolversEnhanceMap, 
-  applyResolversEnhanceMap,  
-  Role} from "../prisma/generated/type-graphql";
-import {CustomAuthResolver} from "./customAuthResolver";
-import { customAuthChecker } from "./auth/custom-auth-checker";
-
-import { Middelware } from "./middelware/middelware"
-
-
-const resolversEnhanceMap: ResolversEnhanceMap = {
-  User: {
-    users: [Authorized(Role.ADMIN)],
-  },
-};
-
-//Middelware
-Middelware.encryptPassword(context)
-
+//-------  Middelware
+// PWD hash
+/* Middelware.encryptPassword(context) */ 
+// Routes guard
 applyResolversEnhanceMap(resolversEnhanceMap);
-
 
 const app = async () => {
   const schema = await tq.buildSchema({
@@ -35,12 +22,15 @@ const app = async () => {
     authChecker: customAuthChecker,
     validate: false,
   });
-
-  new ApolloServer({ schema, context: context }).listen({ port: 4000 }, () => {
+  
+  await new ApolloServer({ schema, context}
+  ).listen({ port: 4000 }, () => {
     console.log(
       "🚀 Server ready at: http://localhost:4000/graphql"
     )
-  }
-  );
+  });
 };
+
 app();
+
+

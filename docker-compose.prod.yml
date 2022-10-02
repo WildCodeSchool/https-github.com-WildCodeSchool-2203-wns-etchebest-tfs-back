@@ -1,10 +1,12 @@
 version: "2"
 services:
   server-tfs:
-    image: hochartdev/tfs_deploy_server
-    pull_policy: always
-    command: sh -c "npx prisma generate && npm run build && npm run prod "
     container_name: "server-tfs"
+    image: hochartdev/tfs_deploy_server
+    ports:
+      - 4000:4000
+    pull_policy: always
+    command: sh -c "npx prisma generate && npm run build && npm run prod"
     depends_on:
       mysql:
         condition: service_healthy
@@ -27,11 +29,13 @@ services:
   #     - mysql:/var/lib/mysql
   client-tfs:
     image: hochartdev/tfs_deploy_client
+    container_name: "client-tfs"
+    ports:
+      - 3000:3000
     pull_policy: always
     command: sh -c "yarn build && yarn start"
     depends_on:
       - server-tfs
-    container_name: "client-tfs"
   nginx:
     image: nginx:1.22
     depends_on:

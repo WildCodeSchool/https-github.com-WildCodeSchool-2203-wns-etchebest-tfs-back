@@ -1,6 +1,7 @@
 services:
   server-tfs:
     build: .
+    command: sh -c "npx prisma generate && npm run build && npm run prod"
     container_name: "server-tfs"
     depends_on:
       mysql:
@@ -35,6 +36,7 @@ services:
       - PMA_ARBITRARY=1
   client-tfs:
     build: ../2203-wns-etchebest-tfs-front/.
+    command: sh -c "yarn build && yarn start"
     depends_on:
       - server-tfs
     container_name: "client-tfs"

@@ -1,14 +1,15 @@
 // Description: Custom resolver for login and register
 
-import { Arg, Ctx, Field, InputType, Mutation,Resolver } from "type-graphql";
+import { Arg, Ctx, Field, InputType, Mutation,Query,Resolver } from "type-graphql";
 
 const bcrypt = require('bcrypt');
 
 import jwt from 'jsonwebtoken';
 import { ApolloError } from "apollo-server";
 import { MaxLength } from "class-validator";
-import { UserCreateInput } from "../../prisma/generated/type-graphql";
-import { IContext } from "../context";
+import { User as IUser, UserCreateInput } from "../../prisma/generated/type-graphql";
+import { IContext} from "../context";
+
 
 
 @InputType()
@@ -21,16 +22,22 @@ export class LoginInput {
   password!: string;
 }
 
-//AUTH resolver
+@InputType()
+export class MeInput {
+  @Field()
+  token!: string;
+}
+
+
 @Resolver()
 export class CustomAuthResolver {
   
   //LOGIN mutation
   @Mutation(() => String)
-  async login( @Ctx() { prisma }: IContext, @Arg("data") data: LoginInput ) {
-    console.log(data)
+  async login( @Ctx() context: IContext, @Arg("data") data: LoginInput ) {
+    
     const {email,password} = data
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await context.prisma.user.findUnique({ where: { email } });
 
     if (user === null) {
       throw new ApolloError("Incorrect identifier", "INVALID_CREDENTIALS");
@@ -70,7 +77,39 @@ export class CustomAuthResolver {
     const token =  jwt.sign({email: user.email}, process.env.JWT_SECRET || 'supersecret', {expiresIn: '1h'});
     return token;
   }
+
+  @Query(() => IUser,{nullable:true})
+  async me( @Ctx()  ctx : IContext ) {
+    const email = ctx.user as string | null;
+
+    if(email){
+      const user = await ctx.prisma.user.findUnique({ where: { email } });
+
+      //Retire des champs sensibles
+      /* console.log(exclude(user,'password', 'createdAt', 'updatedAt') as IUser) */
+
+      const {password, createdAt, updatedAt, ...rest} = user as IUser;
+      return rest 
+    }
+    else{
+      return null
+    }
+    
+  }
 }
 
 
 
+
+
+
+//A utiliser pour retirer des champs d'un objet du type password ...
+function exclude(
+  user: any,
+  ...keys: any
+) {
+  for (let key of keys) {
+    delete user[key]
+  }
+  return user
+}  

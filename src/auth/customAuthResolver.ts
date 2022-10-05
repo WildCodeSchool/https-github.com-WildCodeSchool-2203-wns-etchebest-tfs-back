@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 
 import jwt from 'jsonwebtoken';
 import { ApolloError } from "apollo-server";
-import { MaxLength } from "class-validator";
+import { MinLength } from "class-validator";
 import { User as IUser, UserCreateInput } from "../../prisma/generated/type-graphql";
 import { IContext} from "../context";
 
@@ -18,7 +18,7 @@ export class LoginInput {
   email!: string;
 
   @Field()
-  @MaxLength(8) //TODO: @MINLENGTH pas MAX
+  @MinLength(8)
   password!: string;
 }
 

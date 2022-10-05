@@ -1,7 +1,7 @@
 services:
   server-tfs:
     build: .
-    command: sh -c "npx prisma generate && npm run build && npm run prod"
+    # command: sh -c "npx prisma generate && npm run build && npm run prod"
     container_name: "server-tfs"
     depends_on:
       mysql:

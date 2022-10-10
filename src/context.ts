@@ -1,9 +1,7 @@
 // A chaque requête, le middleware context.ts est appelé et vérifie le token.
 
 import { PrismaClient } from "@prisma/client";
-import { AuthenticationError } from "apollo-server";
 import jwt from 'jsonwebtoken';
-import { User } from "../prisma/generated/type-graphql";
 
 const prisma = new PrismaClient();
 export interface ITokenVerified {
@@ -20,14 +18,14 @@ export interface IContext {
 
 export const context = ({ req }: any): IContext => {
   const authorization = req.headers.authorization;
-
+  console.log(authorization)
   let token = authorization
-  //Vérifie si le token comprend le mot "Bearer" pour le retirer
-  if (token.match(/^Bearer /)) {
-    token = authorization.replace('Bearer ', '');
-  }
-  
+ 
   if (token) {
+       //Vérifie si le token comprend le mot "Bearer" pour le retirer
+    if (token.match(/^Bearer /)) {
+      token = authorization.replace('Bearer ', '');
+    }
     let payload;
     try {
         payload = jwt.verify(token, process.env.JWT_SECRET || 'supersecret') as ITokenVerified;

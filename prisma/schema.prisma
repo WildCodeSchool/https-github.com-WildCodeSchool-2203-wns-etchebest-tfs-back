@@ -19,6 +19,25 @@ generator typegraphql {
   output   = "../prisma/generated/type-graphql"
 }
 
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Status {
+  OPEN
+  IN_PROGRESS
+  CLOSED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+
 //https://www.prisma.io/docs/concepts/components/prisma-schema/data-model
 model User{
   id Int @id @default(autoincrement())
@@ -32,24 +51,24 @@ model User{
   comments Comment[]
   tickets_author Ticket[] @relation("author")
   tickets_assign Ticket[] @relation("assigned")
+  //projects_author Project[] @relation("author")
   //A FAIRE !!! Retourner un tableau de roles et non un seul role
   //Attention, prisma ne permet pas de mettre un tableau en valeur par défaut
   //---à mettre en place dans le resolver au moment de la création d'un utilisateur (user.roles.push('ADMIN'))
   roles    Role     @default(USER)
+  projects Project[]
+  projects_author Project[] @relation("project_author")
 }
-
-enum Role {
-  USER
-  ADMIN
-}
-
 
 
 model Ticket{
   id Int @id @default(autoincrement()) //For a string ID   --- id String @id @default(cuid())
-  title String 
-  description String
-  status String 
+  title String @db.VarChar(75)
+  description String @db.VarChar(255)
+  status Status @default(OPEN)
+  priority Priority @default(LOW)
+  time_estimation DateTime
+  files File[]
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt
   //Relations
@@ -60,21 +79,50 @@ model Ticket{
   user_assign_id Int?
   project Project @relation(fields: [project_id], references: [id])
   project_id Int
+  comments Comment[]
+  labels Label[]
+}
+
+model File{
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(75)
+  url String  @db.VarChar(255)
+  size Int? @db.Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime? @updatedAt
+  ticket Ticket @relation(fields: [ticket_id], references: [id])
+  ticket_id Int
 }
 
 model Comment{
   id Int @id @default(autoincrement())
-  content String
+  content String @db.VarChar(255)
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt
   //Relations
   author User @relation(fields: [author_id], references: [id])
   author_id Int
+  ticket Ticket @relation(fields: [ticket_id], references: [id])
+  ticket_id Int
 }
 
 model Project{
   id Int @id @default(autoincrement())
-  subject String?
+  title String @db.VarChar(75)
+  subject String? @db.VarChar(255)
+  code String @db.Char(3)
+  createdAt DateTime @default(now())
+  updatedAt DateTime? @updatedAt
+  //Relations
+  tickets Ticket[] 
+  members User[]
+  user_author_project User @relation(name:"project_author",fields: [user_author_project_id], references: [id])
+  user_author_project_id Int
+}
+
+model Label{
+  id Int @id @default(autoincrement())
+  name String
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt
   //Relations

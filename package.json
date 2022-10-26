@@ -19,6 +19,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@faker-js/faker": "^7.6.0",
     "@types/jsonwebtoken": "^8.5.8",
     "@types/node": "^17.0.24",
     "nodemon": "^2.0.15",

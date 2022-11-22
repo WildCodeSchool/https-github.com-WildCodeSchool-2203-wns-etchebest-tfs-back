@@ -33,20 +33,20 @@ export class MeInput {
 export class CustomAuthResolver {
   
   //LOGIN mutation
-  @Mutation(() => String)
+  @Query(() => String)
   async login( @Ctx() context: IContext, @Arg("data") data: LoginInput ) {
     
     const {email,password} = data
     const user = await context.prisma.user.findUnique({ where: { email } });
 
     if (user === null) {
-      throw new ApolloError("Incorrect identifier", "INVALID_CREDENTIALS");
+      throw new ApolloError("Identifiant inconnu", "INVALID_CREDENTIALS");
     }
     else{
       const isValid = await bcrypt.compare(password, user.password);
 
       if(!isValid){
-        throw new ApolloError("Invalid password", "INVALID_CREDENTIALS");
+        throw new ApolloError("Mot de passe non valide", "INVALID_CREDENTIALS");
       }
       else {
         const token = jwt.sign({email: user.email}, process.env.JWT_SECRET || 'supersecret', {expiresIn: '1h'});
@@ -78,8 +78,15 @@ export class CustomAuthResolver {
     return token;
   }
 
+
+  /**
+   * @param ctx Contain context with prisma and email of user
+   * @Returns Returns null  the user contained in the token or null if the token is invalid
+   * The token is verified in context.ts and push in ctx
+   */
   @Query(() => IUser,{nullable:true})
   async me( @Ctx()  ctx : IContext ) {
+    console.log(ctx.user)
     const email = ctx.user as string | null;
 
     if(email){

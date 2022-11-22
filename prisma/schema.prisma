@@ -28,6 +28,7 @@ enum Role {
 enum Status {
   OPEN
   IN_PROGRESS
+  REVIEW
   CLOSED
 }
 
@@ -67,7 +68,7 @@ model Ticket{
   description String @db.VarChar(255)
   status Status @default(OPEN)
   priority Priority @default(LOW)
-  time_estimation DateTime
+  time_estimation DateTime?
   files File[]
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt

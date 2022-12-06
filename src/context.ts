@@ -18,8 +18,8 @@ export interface IContext {
 
 export const context = ({ req }: any): IContext => {
   const authorization = req.headers.authorization;
-  console.log(authorization)
   let token = authorization
+  console.log(token);
  
   if (token) {
        //Vérifie si le token comprend le mot "Bearer" pour le retirer

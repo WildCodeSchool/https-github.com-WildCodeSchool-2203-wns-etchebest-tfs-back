@@ -1,7 +1,6 @@
 version: "2"
 services:
   server-tfs:
-    container_name: "server-tfs"
     image: hochartdev/tfs_deploy_server
     pull_policy: always
     depends_on:
@@ -10,7 +9,6 @@ services:
     tty: true
   mysql:
     image: mysql
-    container_name: "mysql"
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -19,11 +17,10 @@ services:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       timeout: 30s
       retries: 10
-  #   volumes:
-  #     - mysql:/var/lib/mysql
+      volumes:
+       - mysql:/var/lib/mysql
   client-tfs:
     image: hochartdev/tfs_deploy_client
-    container_name: "client-tfs"
     pull_policy: always
     depends_on:
       - server-tfs

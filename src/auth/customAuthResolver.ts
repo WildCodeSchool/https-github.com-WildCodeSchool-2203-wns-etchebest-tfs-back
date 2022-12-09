@@ -35,7 +35,7 @@ export class CustomAuthResolver {
   //LOGIN mutation
   @Query(() => String)
   async login( @Ctx() context: IContext, @Arg("data") data: LoginInput ) {
-    
+    console.log(data)
     const {email,password} = data
     const user = await context.prisma.user.findUnique({ where: { email } });
 

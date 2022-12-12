@@ -7,6 +7,8 @@ services:
       mysql:
         condition: service_healthy
     tty: true
+    command: bash -c "npx prisma generate && npm run start"
+
   mysql:
     image: mysql
     restart: always
@@ -19,11 +21,13 @@ services:
       retries: 10
       volumes:
        - mysql:/var/lib/mysql
+
   client-tfs:
     image: hochartdev/tfs_deploy_client
     pull_policy: always
     depends_on:
       - server-tfs
+      
   nginx:
     image: nginx:1.22
     depends_on:

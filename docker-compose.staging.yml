@@ -19,8 +19,9 @@ services:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       timeout: 30s
       retries: 10
-      volumes:
-       - mysql:/var/lib/mysql
+    volumes:
+      - mysql:/var/lib/mysql
+
 
   client-tfs:
     image: hochartdev/tfs_deploy_client

@@ -1,7 +1,7 @@
 services:
   server-tfs:
     build: .
-    container_name: "server-tfs"
+    command: bash -c "npx prisma generate && npx prisma db push --force-reset && npx prisma db seed && npm run start"
     depends_on:
       mysql:
         condition: service_healthy
@@ -10,9 +10,9 @@ services:
       - 4000:4000
     volumes:
       - ./src/:/app/src/
+
   mysql:
     image: mysql
-    container_name: "mysql"
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -21,8 +21,9 @@ services:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       timeout: 30s
       retries: 10
-  #   volumes:
-  #     - mysql:/var/lib/mysql 
+    ports:
+      - 3306:3306
+
   phpmyadmin:
     image: phpmyadmin
     restart: always
@@ -30,6 +31,7 @@ services:
       - 8080:80
     environment:
       - PMA_ARBITRARY=1
+
   client-tfs:
     build: ../2203-wns-etchebest-tfs-front/.
     depends_on:

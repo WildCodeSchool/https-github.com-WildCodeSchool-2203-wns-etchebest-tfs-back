@@ -22,6 +22,7 @@ services:
     volumes:
       - mysql:/var/lib/mysql
 
+
   client-tfs:
     image: hochartdev/tfs_deploy_client
     pull_policy: always

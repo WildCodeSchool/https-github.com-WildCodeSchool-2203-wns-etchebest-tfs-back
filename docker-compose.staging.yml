@@ -2,12 +2,14 @@ version: "2"
 services:
   server-tfs:
     image: hochartdev/tfs_deploy_server
+    env_file:
+      - .env
     pull_policy: always
     depends_on:
       mysql:
         condition: service_healthy
     tty: true
-    command: bash -c "npx prisma generate && npm run start"
+    command: bash -c "npx prisma generate && npx prisma db push && npm run start"
 
   mysql:
     image: mysql

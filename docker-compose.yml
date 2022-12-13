@@ -1,6 +1,8 @@
 services:
   server-tfs:
     build: .
+    env_file:
+      - .env
     command: bash -c "npx prisma generate && npx prisma db push --force-reset && npx prisma db seed && npm run start"
     depends_on:
       mysql:

@@ -32,5 +32,3 @@ const app = async () => {
 };
 
 app();
-
-

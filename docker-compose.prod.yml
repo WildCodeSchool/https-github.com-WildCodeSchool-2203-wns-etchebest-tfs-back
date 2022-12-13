@@ -1,0 +1,47 @@
+version: "2"
+services:
+  server-tfs:
+    image: hochartdev/tfs_deploy_server_prod
+    env_file:
+      - .env
+    pull_policy: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+    tty: true
+    command: bash -c "npx prisma generate && npx prisma db push && npm run start"
+
+  mysql:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 30s
+      retries: 10
+    volumes:
+      - mysqldb:/var/lib/mysql
+
+
+  client-tfs:
+    image: hochartdev/tfs_deploy_client_prod
+    pull_policy: always
+    depends_on:
+      - server-tfs
+      
+  nginx:
+    image: nginx:1.22
+    depends_on:
+      - server-tfs
+      - client-tfs
+    restart: always
+    ports:
+      - ${GATEWAY_PORT:-8000}:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./logs:/var/log/nginx
+
+volumes:
+  mysqldb:

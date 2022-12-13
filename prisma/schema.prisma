@@ -129,4 +129,3 @@ model Label{
   //Relations
   tickets Ticket[]
 }
-

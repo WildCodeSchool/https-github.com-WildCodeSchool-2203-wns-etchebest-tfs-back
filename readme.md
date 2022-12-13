@@ -14,6 +14,10 @@ docker compose -f docker-compose.yml up --build
 docker-compose up
 ```
 Playground graphQl: http://localhost:4000/graphql
+<<<<<<< HEAD
+=======
+
+>>>>>>> dev
 PHPmyadmin: http://localhost:8080
   - serveur = [CONTAINER_NAME] (mysql)
   - user = [USERNAME] (root)

@@ -9,6 +9,10 @@ import { context } from "./context";
 import { CustomAuthResolver } from "./auth/customAuthResolver";
 import { customAuthChecker } from "./auth/customAuthChecker";
 import { resolversEnhanceMap } from "./auth/guard";
+<<<<<<< HEAD
+=======
+import { CustomUserResolver } from "./resolver/customUserResolver";
+>>>>>>> dev
 
 //-------  Middelware
 // PWD hash
@@ -18,7 +22,7 @@ applyResolversEnhanceMap(resolversEnhanceMap);
 
 const app = async () => {
   const schema = await tq.buildSchema({
-    resolvers: [...resolvers, CustomAuthResolver],
+    resolvers: [...resolvers, CustomAuthResolver, CustomUserResolver],
     authChecker: customAuthChecker,
     validate: false,
   });

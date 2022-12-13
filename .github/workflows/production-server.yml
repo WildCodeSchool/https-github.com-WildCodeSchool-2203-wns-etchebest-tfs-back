@@ -1,11 +1,11 @@
-# .github/workflows/staging-server.yml
+# .github/workflows/production-server.yml
 name: Compile and push server image
 
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: ["dev"]
+    branches: ["main"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -41,4 +41,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/tfs_deploy_server:latest
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/tfs_deploy_server_prod:latest

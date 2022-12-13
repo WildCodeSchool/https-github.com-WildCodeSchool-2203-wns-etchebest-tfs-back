@@ -1,13 +1,21 @@
+<<<<<<< HEAD
+=======
 import { Prisma } from "@prisma/client";
+>>>>>>> dev
 import { IContext } from "../context";
 const bcrypt = require("bcrypt");
 
 
 export class Middelware {
 
+<<<<<<< HEAD
+  static encryptPassword(context:IContext ) {
+    context.prisma.$use(async (params:any, next:any) => {
+=======
   //Intercepte les requêtes de création de user et hash le password
  /*  static encryptPassword(context: ()=>({ req }: any) => IContext) {
     context.prisma.$use(async (params, next) => {
+>>>>>>> dev
       if (params.action === "create" && params.model === "User") {
         try {
           const user = params.args.data;

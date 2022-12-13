@@ -8,9 +8,16 @@ export const resolversEnhanceMap: ResolversEnhanceMap = {
     users: [Authorized(Role.USER)],
   },
   Project: {
+<<<<<<< HEAD
+    projects: [Authorized(Role.ADMIN)],
+  },
+  Ticket: {
+    tickets: [Authorized(Role.USER)],
+=======
     
   },
   Ticket: {
     /* tickets: [Authorized(Role.USER)], */
+>>>>>>> dev
   },
 };

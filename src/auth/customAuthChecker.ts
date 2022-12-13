@@ -7,10 +7,6 @@ export const customAuthChecker: AuthChecker<IContext> = async ({ context }, role
   
   let user = null
   if(context.user) { 
-<<<<<<< HEAD
-    console.log({authChecker:{contextUser: context.user}})
-=======
->>>>>>> dev
     try {
       user = await context.prisma.user.findUnique({ where: { email: context.user } });
     } catch (error) {
@@ -18,11 +14,7 @@ export const customAuthChecker: AuthChecker<IContext> = async ({ context }, role
     }
   }
   
-<<<<<<< HEAD
-  console.log({user_role:user?.roles, roles});
-=======
   /* console.log({user_role:user?.roles, route_role:roles}); */
->>>>>>> dev
  
   //Checke les rôles des ROUTES (accessibles avec ou sans permissions)
   if(roles.length === 0) {

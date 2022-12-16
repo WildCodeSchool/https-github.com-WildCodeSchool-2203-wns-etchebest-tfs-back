@@ -1,6 +1,6 @@
 //Librairies
 import "reflect-metadata";
-import { ApolloServer } from "apollo-server";
+import { ApolloError, ApolloServer } from "apollo-server";
 import * as tq from "type-graphql";
 import { applyResolversEnhanceMap, resolvers } from "../prisma/generated/type-graphql";
 
@@ -19,9 +19,9 @@ applyResolversEnhanceMap(resolversEnhanceMap);
 
 const app = async () => {
   const schema = await tq.buildSchema({
-    resolvers: [...resolvers, CustomAuthResolver, CustomUserResolver],
+    resolvers: [...resolvers,  CustomAuthResolver, CustomUserResolver],
     authChecker: customAuthChecker,
-    validate: false,
+    validate: true,
   });
   
   await new ApolloServer({ schema, context}

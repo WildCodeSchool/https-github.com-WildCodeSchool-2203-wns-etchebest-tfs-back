@@ -52,4 +52,3 @@ export const context = ({ req }: any): IContext => {
       user: null
    };
   } 
-

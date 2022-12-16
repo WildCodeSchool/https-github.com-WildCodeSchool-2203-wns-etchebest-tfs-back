@@ -1,7 +1,7 @@
 version: "2"
 services:
   server-tfs:
-    image: hochartdev/tfs_deploy_server
+    image: hochartdev/tfs_deploy_server_prod
     env_file:
       - .env
     pull_policy: always
@@ -26,7 +26,7 @@ services:
 
 
   client-tfs:
-    image: hochartdev/tfs_deploy_client
+    image: hochartdev/tfs_deploy_client_prod
     pull_policy: always
     depends_on:
       - server-tfs

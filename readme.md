@@ -73,6 +73,21 @@ Une interface sera disponible sur le port 5000
 
 ## Pendant les développement
 
+#### Pour le dev, la BDD est initialisée avec 4 types d'utilisateurs (Intern, User, Lead, Admin)
+
+##### Intern
+- email: intern@structure.com
+- password: 00000000
+##### User
+- email: user@structure.com
+- password: 00000000
+##### Lead
+- email: lead@structure.com
+- password: 00000000
+##### Admin
+- email: admin@structure.com
+- password: 00000000
+
 ### Après chaque modification du modèle prisma
 
 ```sh

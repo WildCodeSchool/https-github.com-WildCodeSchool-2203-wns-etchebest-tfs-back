@@ -12,7 +12,8 @@ services:
       - 4000:4000
     volumes:
       - ./src/:/app/src/
-
+    env_file: .env
+    
   mysql:
     image: mysql
     restart: always

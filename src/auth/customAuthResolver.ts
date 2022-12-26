@@ -113,8 +113,8 @@ export class CustomAuthResolver {
 
 
   /**
-   * @param ctx Contain context with prisma and email of user
-   * @Returns Returns null  the user contained in the token or null if the token is invalid
+   * @param ctx Contains context with prisma and email of user
+   * @Returns Returns the user associated with the token or null if the token is invalid
    * The token is verified in context.ts and push in ctx
    */
   @Query(() => User,{nullable:true})

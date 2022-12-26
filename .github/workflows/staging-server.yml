@@ -1,9 +1,6 @@
-# .github/workflows/staging-server.yml
 name: Compile and push server image
-
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
+  # Triggers the workflow on push or pull request events but only for the staging "dev" branch
   push:
     branches: ["dev"]
 

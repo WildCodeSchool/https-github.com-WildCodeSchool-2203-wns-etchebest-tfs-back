@@ -1,4 +1,4 @@
-// A chaque requête, le middleware context.ts est appelé et vérifie le token.
+// On each request, the middleware context.ts is called and verify the token.
 
 import { PrismaClient } from "@prisma/client";
 import { ApolloError } from "apollo-server";
@@ -26,7 +26,6 @@ export const context = ({ req }: any): IContext => {
   let token = authorization
  
   if (token) {
-       //Vérifie si le token comprend le mot "Bearer" pour le retirer
     if (token.match(/^Bearer /)) {
       token = authorization.replace('Bearer ', '');
     }
@@ -34,20 +33,20 @@ export const context = ({ req }: any): IContext => {
     try {
         payload = jwt.verify(token, process.env.JWT_SECRET) as ITokenVerified;
         return { 
-          //si OK, renvoie contexte + user (email)
+          //OK: context + user (email)
           prisma, 
           user: payload.email 
         };
       } catch (error) {
-        console.log("Pas d'utilisateur connecté");
+        console.log("Cannot find user with this token");
         return { 
-          // Si erreur, renvoie contexte + user (null)
+          // Error: context + user (null)
           prisma, 
           user: null };
       }
     }
     return { 
-      // Si pas de token, renvoie contexte + user (null)
+      // No token: context + user (null)
       prisma,
       user: null
    };

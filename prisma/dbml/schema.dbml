@@ -1,0 +1,124 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table User {
+  id Int [pk, increment]
+  firstname String [not null]
+  lastname String [not null]
+  email String [unique, not null]
+  password String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime
+  comments Comment [not null]
+  tickets_author Ticket [not null]
+  tickets_assign Ticket [not null]
+  roles Role [not null, default: 'USER']
+  projects Project [not null]
+  projects_author Project [not null]
+}
+
+Table Ticket {
+  id Int [pk, increment]
+  title String [not null]
+  description String [not null]
+  status Status [not null, default: 'OPEN']
+  priority Priority [not null, default: 'LOW']
+  time_estimation DateTime
+  files File [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime
+  user_author User [not null]
+  user_author_id Int [not null]
+  user_assign User
+  user_assign_id Int
+  project Project [not null]
+  project_id Int [not null]
+  comments Comment [not null]
+  labels Label [not null]
+}
+
+Table File {
+  id Int [pk, increment]
+  name String [not null]
+  url String [not null]
+  size Int
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime
+  ticket Ticket
+  ticket_id Int [not null]
+}
+
+Table Comment {
+  id Int [pk, increment]
+  content String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime
+  author User [not null]
+  author_id Int [not null]
+  ticket Ticket [not null]
+  ticket_id Int [not null]
+}
+
+Table Project {
+  id Int [pk, increment]
+  title String [not null]
+  subject String
+  code String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime
+  tickets Ticket [not null]
+  members User [not null]
+  user_author_project User [not null]
+  user_author_project_id Int [not null]
+}
+
+Table Label {
+  id Int [pk, increment]
+  name String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime
+  tickets Ticket [not null]
+}
+
+Table ProjectToUser {
+  projectsId Int [ref: > Project.id]
+  membersId Int [ref: > User.id]
+}
+
+Table LabelToTicket {
+  labelsId Int [ref: > Label.id]
+  ticketsId Int [ref: > Ticket.id]
+}
+
+Enum Role {
+  USER
+  ADMIN
+}
+
+Enum Status {
+  OPEN
+  IN_PROGRESS
+  REVIEW
+  CLOSED
+}
+
+Enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+Ref: Ticket.user_author_id > User.id
+
+Ref: Ticket.user_assign_id > User.id
+
+Ref: Ticket.project_id > Project.id
+
+Ref: File.ticket_id > Ticket.id
+
+Ref: Comment.author_id > User.id
+
+Ref: Comment.ticket_id > Ticket.id
+
+Ref: Project.user_author_project_id > User.id

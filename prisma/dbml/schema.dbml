@@ -7,13 +7,13 @@ Table User {
   firstname String [not null]
   lastname String [not null]
   email String [unique, not null]
-  password String [not null]
-  createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime
+  password String [not null, note: '@TypeGraphQL.omit(output: true)']
+  createdAt DateTime [default: `now()`, not null, note: '@TypeGraphQL.omit(output: true, input: true)']
+  updatedAt DateTime [note: '@TypeGraphQL.omit(output: true, input: true)']
+  roles Role [not null, default: 'DEV']
   comments Comment [not null]
   tickets_author Ticket [not null]
   tickets_assign Ticket [not null]
-  roles Role [not null, default: 'USER']
   projects Project [not null]
   projects_author Project [not null]
 }
@@ -45,7 +45,7 @@ Table File {
   size Int
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime
-  ticket Ticket
+  ticket Ticket [not null]
   ticket_id Int [not null]
 }
 
@@ -92,8 +92,10 @@ Table LabelToTicket {
 }
 
 Enum Role {
-  USER
   ADMIN
+  LEAD
+  DEV
+  INTERN
 }
 
 Enum Status {
@@ -113,7 +115,7 @@ Ref: Ticket.user_author_id > User.id
 
 Ref: Ticket.user_assign_id > User.id
 
-Ref: Ticket.project_id > Project.id
+Ref: Ticket.project_id > Project.id [delete: Cascade]
 
 Ref: File.ticket_id > Ticket.id
 

@@ -25,11 +25,11 @@ async function main() {
       roles: "LEAD",
     },
     {
-      firstname: "User",
-      lastname: "User",
-      email: "user@structure.com",
+      firstname: "Dev",
+      lastname: "Dev",
+      email: "dev@structure.com",
       password: bcrypt.hashSync("00000000", bcrypt.genSaltSync(10)),
-      roles: "USER",
+      roles: "DEV",
     },
     {
       firstname: "Intern",
@@ -49,7 +49,7 @@ async function main() {
       lastname: lastName,
       email: faker.internet.email(firstName, lastName),
       password: bcrypt.hashSync("00000000", bcrypt.genSaltSync(10)),
-      roles: faker.helpers.arrayElement(["ADMIN", "LEAD", "USER", "INTERN"]),
+      roles: faker.helpers.arrayElement(["ADMIN", "LEAD", "DEV", "INTERN"]),
     };
     users.push(user);
   }

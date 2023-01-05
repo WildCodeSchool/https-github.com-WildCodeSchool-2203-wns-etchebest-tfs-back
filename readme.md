@@ -88,13 +88,13 @@ An interface will be available on port 5000
 
 ## Seeding datas:
 
-#### For development, DB is initialized with 4 users: Intern, User, Lead, Admin
+#### For development, DB is initialized with 4 users: Intern, Dev, Lead, Admin
 
 ##### Intern
 - email: intern@structure.com
 - password: 00000000
-##### User
-- email: user@structure.com
+##### Dev
+- email: dev@structure.com
 - password: 00000000
 ##### Lead
 - email: lead@structure.com

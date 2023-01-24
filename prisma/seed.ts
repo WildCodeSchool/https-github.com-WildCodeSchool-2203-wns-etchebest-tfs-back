@@ -1,21 +1,44 @@
-import { users } from "./data/users";
 import { PrismaClient } from "@prisma/client";
 import { faker } from "@faker-js/faker";
 import {
-  ProjectCreateInput,
-  ProjectCreateManyInput,
   UserCreateInput,
 } from "./generated/type-graphql";
+const bcrypt = require('bcrypt');
 
 const prisma = new PrismaClient();
 
-
 async function main() {
-  const amountOfUsers = 50;
-  const amountOfProjects = 8;
-
-  const users: UserCreateInput[] = [];
-  const projects: ProjectCreateManyInput[] = [];
+  const amountOfUsers = 10;
+  const users: UserCreateInput[] = [
+    {
+      firstname: "Admin",
+      lastname: "Admin",
+      email: "admin@structure.com",
+      password: bcrypt.hashSync("00000000", bcrypt.genSaltSync(10)),
+      roles: "ADMIN",
+    },
+    {
+      firstname: "Lead",
+      lastname: "Lead",
+      email: "lead@structure.com",
+      password: bcrypt.hashSync("00000000", bcrypt.genSaltSync(10)),
+      roles: "LEAD",
+    },
+    {
+      firstname: "Dev",
+      lastname: "Dev",
+      email: "dev@structure.com",
+      password: bcrypt.hashSync("00000000", bcrypt.genSaltSync(10)),
+      roles: "DEV",
+    },
+    {
+      firstname: "Intern",
+      lastname: "Intern",
+      email: "intern@structure.com",
+      password: bcrypt.hashSync("00000000", bcrypt.genSaltSync(10)),
+      roles: "INTERN",
+    },
+  ];
 
   for (let index = 0; index < amountOfUsers; index++) {
     const firstName = faker.name.firstName();
@@ -25,32 +48,18 @@ async function main() {
       firstname: firstName,
       lastname: lastName,
       email: faker.internet.email(firstName, lastName),
-      password: faker.internet.password(),
-      roles: faker.helpers.arrayElement(["USER", "ADMIN"]),
+      password: bcrypt.hashSync("00000000", bcrypt.genSaltSync(10)),
+      roles: faker.helpers.arrayElement(["ADMIN", "LEAD", "DEV", "INTERN"]),
     };
-
     users.push(user);
   }
 
-/*   for (let index = 0; index < amountOfProjects; index++) {
-    const project: ProjectCreateManyInput = {
-      code: faker.lorem.word(3),
-      subject: faker.lorem.sentence(),
-      title: faker.lorem.sentence(),
-      user_author_project_id: 1
-    };
-    projects.push(project);
-  } */
-
   const addUsers = async () => await prisma.user.createMany({ data: users });
   addUsers();
-/*   const addProjects = async () => await prisma.project.createMany({ data: projects });
-  addProjects(); */
 }
 
 main()
   .catch((e) => {
-    console.log(e);
     process.exit(1);
   })
   .finally(() => {

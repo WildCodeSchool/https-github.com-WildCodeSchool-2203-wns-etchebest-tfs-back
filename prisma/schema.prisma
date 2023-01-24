@@ -19,10 +19,15 @@ generator typegraphql {
   output   = "../prisma/generated/type-graphql"
 }
 
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
 
 enum Role {
-  USER
   ADMIN
+  LEAD
+  DEV
+  INTERN
 }
 
 enum Status {
@@ -42,21 +47,20 @@ enum Priority {
 //https://www.prisma.io/docs/concepts/components/prisma-schema/data-model
 model User{
   id Int @id @default(autoincrement())
-  firstname String
-  lastname String
-  email String @unique
+  firstname String @db.VarChar(70)
+  lastname String @db.VarChar(70)
+  email String @unique @db.VarChar(70)
+  /// @TypeGraphQL.omit(output: true)
   password String
+  /// @TypeGraphQL.omit(output: true, input: true)
   createdAt DateTime @default(now())
+  /// @TypeGraphQL.omit(output: true, input: true)
   updatedAt DateTime? @updatedAt
+  roles    Role     @default(DEV)
   //Relations
   comments Comment[]
   tickets_author Ticket[] @relation("author")
   tickets_assign Ticket[] @relation("assigned")
-  //projects_author Project[] @relation("author")
-  //A FAIRE !!! Retourner un tableau de roles et non un seul role
-  //Attention, prisma ne permet pas de mettre un tableau en valeur par défaut
-  //---à mettre en place dans le resolver au moment de la création d'un utilisateur (user.roles.push('ADMIN'))
-  roles    Role     @default(USER)
   projects Project[]
   projects_author Project[] @relation("project_author")
 }
@@ -76,9 +80,9 @@ model Ticket{
   //https://www.prisma.io/docs/concepts/components/prisma-schema/relations#disambiguating-relations
   user_author User @relation(name:"author",fields: [user_author_id], references: [id])
   user_author_id Int
-  user_assign User? @relation("assigned",fields: [user_assign_id], references: [id])
+  user_assign User? @relation("assigned",fields: [user_assign_id], references: [id], onDelete: Cascade)
   user_assign_id Int?
-  project Project @relation(fields: [project_id], references: [id])
+  project Project @relation(fields: [project_id], references: [id], onDelete: Cascade)
   project_id Int
   comments Comment[]
   labels Label[]
@@ -117,7 +121,7 @@ model Project{
   //Relations
   tickets Ticket[] 
   members User[]
-  user_author_project User @relation(name:"project_author",fields: [user_author_project_id], references: [id])
+  user_author_project User @relation(name:"project_author",fields: [user_author_project_id], references: [id], onDelete: Cascade)
   user_author_project_id Int
 }
 

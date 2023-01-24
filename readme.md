@@ -1,18 +1,47 @@
 # Structure
 
+# Project status
 
-## Lancer le projet (back et front) avec docker
+*This project is currently in development*
 
-#### Au premier lancement ou à chaque modification des dockerfiles ou docker-compose
+## Pre-requisites
+
+You need to install on your machine:
+Docker: https://docs.docker.com/get-docker/ It needs to be installed in rootless-mode
+Nodejs: https://nodejs.org/en/download/
+Yarn:  https://classic.yarnpkg.com/lang/en/docs/install/#debian-stable
+
+## Create a directory. In this directory, clone both of the repositories:
+
+Back-end: 
+```sh
+git clone git@github.com:WildCodeSchool/2203-wns-etchebest-tfs-back.git
+``` 
+
+Front-end:
+```sh
+git clone git@github.com:WildCodeSchool/2203-wns-etchebest-tfs-front.git
+``` 
+
+
+## Run the project locally using Docker:
+
+#### First time you need to build the application image, and each time the Dockerfile is updated, you need to rebuild:
 
 ```sh   
 docker compose -f docker-compose.yml up --build
 ```
-#### Si vous avez déjà lancé le projet avec docker et que le conteneur est existant
+#### Otherwise just run this command:
 
 ```sh
 docker-compose up
 ```
+
+#### Check if the containers are running properly:
+```sh
+docker ps -a
+```
+
 Playground graphQl: http://localhost:4000/graphql
 PHPmyadmin: http://localhost:8080
   - serveur = [CONTAINER_NAME] (mysql)
@@ -20,74 +49,70 @@ PHPmyadmin: http://localhost:8080
   - password = [PASSWORD] (root)
 Client: http://localhost:3000
 
-#### Entrez dans le conteneur
+#### Enter in a docker container:
 
-##### Dans le serveur ou client
+##### For the server and client containers:
 ```sh
 docker exec -it [CONTAINER_ID] /bin/sh
 ```
-"exit" pour sortir du conteneur
 
-##### Dans la DB
+##### For the database container
 ```sh  
 docker exec -it [CONTAINER_ID | CONTAINER_NAME] mysql -u[USERNAME] -p[PASSWORD]
 ```
-"quit" pour sortir du conteneur
 
-## Lancer le projet
+### Prisma ORM: Create database
+https://www.prisma.io/docs/getting-started/quickstart
 
-### Installer les node modules
-
+### Generate and apply migrations (development ONLY):
 ```sh
-npm install
+npx prisma generate
 ```
-
-### Créer un fichier .env à la racine du projet
-
-Exemple pour une BDD [image]({https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white}) local utilisée en développement
-```
-DATABASE_URL=file:./dev.db
-```
-
-### Génerer la base de données (Génère automatiquement la BDD)
 
 ```sh
 npx prisma migrate dev
 ```
-Génère automatiquement une base de données sqlite ainsi que la mrigation pour créer les tables correspondantes au schema prisma.
 
-### Lancer le serveur
-
-```sh
-npm run start
-```
-Le playground graphQl sera accéssible sur le port 4000
-
-### Pour visualiser et manipuler les données de la base de données
-
-```sh
-npx prisma studio
-```
-Une interface sera disponible sur le port 5000
-
-
-## Pendant les développement
-
-### Après chaque modification du modèle prisma
+### Everytime a model is updated:
 
 ```sh
 npx prisma db push
 ```
 
-### Vous pouvez également réinitialiser la base de données
+### Visualize datas:
+```sh
+npx prisma studio
+```
+An interface will be available on port 5000
 
-ATTENTION NE PAS UTILISER EN PRODUCTION
+
+## Seeding datas:
+
+#### For development, DB is initialized with 4 users: Intern, Dev, Lead, Admin
+
+##### Intern
+- email: intern@structure.com
+- password: 00000000
+##### Dev
+- email: dev@structure.com
+- password: 00000000
+##### Lead
+- email: lead@structure.com
+- password: 00000000
+##### Admin
+- email: admin@structure.com
+- password: 00000000
+
+
+### Reset database:
+
+WARNING: DO NO USE IN PRODUCTION
 ```sh
 npx prisma migrate reset
 ```
 
 
-## Pour la production
+### FOR PRODUCTION ONLY
 ```sh
 npx prisma migrate deploy
 ```

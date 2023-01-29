@@ -56,7 +56,7 @@ model User{
   createdAt DateTime @default(now())
   /// @TypeGraphQL.omit(output: true, input: true)
   updatedAt DateTime? @updatedAt
-  roles    Role     @default(DEV)
+  role    Role     @default(DEV)
   //Relations
   comments Comment[]
   tickets_author Ticket[] @relation("author")

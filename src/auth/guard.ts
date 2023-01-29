@@ -5,24 +5,33 @@ import { ResolversEnhanceMap } from "../../prisma/generated/type-graphql/enhance
 import { Role } from "../../prisma/generated/type-graphql/enums/Role";
 import { IContext } from "../context";
 
-export const isUserDeletingOrUpdateOwnAccount: MiddlewareFn<IContext> = async ({ context, args,info,root },next) => {
-  console.log("context" + info.fieldName)
+export const isUserDeletingOrUpdateOwnAccount: MiddlewareFn<IContext> = async (
+  { context, args, info, root },
+  next
+) => {
+  console.log("context" + info.fieldName);
   if (context.user) {
     const userAuthed = await context.prisma.user.findUnique({
       where: { email: context.user },
     });
-    if (userAuthed && (userAuthed.roles === "ADMIN" || userAuthed.id === args.where.id)) {
+    if (
+      userAuthed &&
+      (userAuthed.role === "ADMIN" || userAuthed.id === args.where.id)
+    ) {
       return next();
     }
     throw new ApolloError(
-      `Vous n'êtes pas autorisé à ${info.fieldName === "updateUser" ? "mettre à jour" : "supprimer"} ce compte`
+      `Vous n'êtes pas autorisé à ${
+        info.fieldName === "updateUser" ? "mettre à jour" : "supprimer"
+      } ce compte`
     );
   }
   throw new ApolloError(
-    `Vous devez être connecté pour ${info.fieldName === "updateUser" ? "mettre à jour" : "supprimer"} ce compte`
+    `Vous devez être connecté pour ${
+      info.fieldName === "updateUser" ? "mettre à jour" : "supprimer"
+    } ce compte`
   );
-}
-
+};
 
 export const resolversEnhanceMap: ResolversEnhanceMap = {
   User: {
@@ -30,11 +39,11 @@ export const resolversEnhanceMap: ResolversEnhanceMap = {
     users: [Authorized(Role.ADMIN, Role.LEAD)],
     updateUser: [
       Authorized(Role.INTERN, Role.DEV, Role.LEAD, Role.ADMIN),
-      UseMiddleware(isUserDeletingOrUpdateOwnAccount)
+      UseMiddleware(isUserDeletingOrUpdateOwnAccount),
     ],
     deleteUser: [
-      Authorized(Role.INTERN, Role.DEV, Role.LEAD, Role.ADMIN), 
-      UseMiddleware(isUserDeletingOrUpdateOwnAccount)
+      Authorized(Role.INTERN, Role.DEV, Role.LEAD, Role.ADMIN),
+      UseMiddleware(isUserDeletingOrUpdateOwnAccount),
     ],
   },
   Project: {

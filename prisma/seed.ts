@@ -1,9 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { faker } from "@faker-js/faker";
-import {
-  UserCreateInput,
-} from "./generated/type-graphql";
-const bcrypt = require('bcrypt');
+import { UserCreateInput } from "./generated/type-graphql";
+const bcrypt = require("bcrypt");
 
 const prisma = new PrismaClient();
 
@@ -15,28 +13,28 @@ async function main() {
       lastname: "Admin",
       email: "admin@structure.com",
       password: bcrypt.hashSync("00000000", bcrypt.genSaltSync(10)),
-      roles: "ADMIN",
+      role: "ADMIN",
     },
     {
       firstname: "Lead",
       lastname: "Lead",
       email: "lead@structure.com",
       password: bcrypt.hashSync("00000000", bcrypt.genSaltSync(10)),
-      roles: "LEAD",
+      role: "LEAD",
     },
     {
       firstname: "Dev",
       lastname: "Dev",
       email: "dev@structure.com",
       password: bcrypt.hashSync("00000000", bcrypt.genSaltSync(10)),
-      roles: "DEV",
+      role: "DEV",
     },
     {
       firstname: "Intern",
       lastname: "Intern",
       email: "intern@structure.com",
       password: bcrypt.hashSync("00000000", bcrypt.genSaltSync(10)),
-      roles: "INTERN",
+      role: "INTERN",
     },
   ];
 
@@ -49,7 +47,7 @@ async function main() {
       lastname: lastName,
       email: faker.internet.email(firstName, lastName),
       password: bcrypt.hashSync("00000000", bcrypt.genSaltSync(10)),
-      roles: faker.helpers.arrayElement(["ADMIN", "LEAD", "DEV", "INTERN"]),
+      role: faker.helpers.arrayElement(["ADMIN", "LEAD", "DEV", "INTERN"]),
     };
     users.push(user);
   }
